@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 
-use crate::{op::BinOp, token::Token};
+use crate::{error::Error, op::BinOp, token::Token};
 
-pub fn shunting_yard(tokens: Vec<Token>) -> Vec<Token> {
+pub fn shunting_yard(tokens: Vec<Token>) -> Result<Vec<Token>, Error> {
     let mut output = Vec::with_capacity(tokens.len());
     let mut operator_stack = VecDeque::new();
     for token in tokens {
@@ -16,16 +16,16 @@ pub fn shunting_yard(tokens: Vec<Token>) -> Vec<Token> {
                     if token == &Token::ParLeft {
                         break;
                     } else if let Token::Operator(op2) = token {
-                        let op2 = op2.clone();
+                        let op2 = *op2;
                         if op1 < op2 || (op1 == op2 && op1.op != BinOp::Pow) {
                             output.push(operator_stack.pop_back().unwrap());
                         } else {
                             break;
                         }
-                    } else if let Token::Function(_) = token { 
+                    } else if let Token::Function(_) = token {
                         output.push(operator_stack.pop_back().unwrap());
-                    }else {
-                        panic!("Invalid token: {:?}", token);
+                    } else {
+                        return Err(Error::InvalidToken);
                     }
                 }
                 operator_stack.push_back(token);
@@ -41,16 +41,17 @@ pub fn shunting_yard(tokens: Vec<Token>) -> Vec<Token> {
                     }
                 }
                 if !ok {
-                    panic!("Unbalanced parentheses");
+                    return Err(Error::UnbalancedParens);
                 }
             }
+            Token::Comma => (),
         }
     }
     while let Some(token) = operator_stack.pop_back() {
         if token == Token::ParLeft {
-            panic!("Unbalanced parentheses");
+            return Err(Error::UnbalancedParens);
         }
         output.push(token);
     }
-    output
+    Ok(output)
 }

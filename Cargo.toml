@@ -1,5 +1,5 @@
 [package]
-name = "calculator"
+name = "calc"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 once_cell = "1.8"
+rust_decimal = { version = "1.17", features = ["maths"] }
