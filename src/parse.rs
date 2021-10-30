@@ -10,6 +10,8 @@ use crate::{
 
 const RESTRICTED_CHARS: &[char] = &['(', ')', '+', '-', '*', '×', '/', '÷', '^', ','];
 
+// Parse a number from an iterator of chars
+// Kinda unreadable, but it works
 fn parse_number(c: char, iter: &mut Peekable<Chars>) -> Result<Decimal, Error> {
     let mut num = String::new();
     num.push(c);
@@ -36,6 +38,18 @@ fn parse_number(c: char, iter: &mut Peekable<Chars>) -> Result<Decimal, Error> {
     Ok(Decimal::from_f64(num).unwrap())
 }
 
+/// Parses a string and generates a vector of tokens
+/// It can take a map of variables to replace them in the expression
+/// ## Example
+/// ```rust
+/// use calc::{parse::parse_str, op::OPERATORS, token::Token};
+/// use rust_decimal::prelude::*;
+/// let tokens = parse_str("2 + 3", None).unwrap();
+/// assert_eq!(
+///     tokens,
+///     vec![Token::Number(Decimal::from_f64(2.0).unwrap()), Token::Operator(*OPERATORS.get(&'+').unwrap()), Token::Number(Decimal::from_f64(3.0).unwrap())]
+/// )
+/// ```
 pub fn parse_str(
     s: &str,
     variables: Option<&HashMap<String, Decimal>>,
@@ -46,6 +60,7 @@ pub fn parse_str(
         if c.is_whitespace() {
             continue;
         } else if c == ',' {
+            // This is helpful for parsing numbers
             tokens.push(Token::Comma);
         } else if c.is_numeric()
             || matches!(c, '+' | '-')
@@ -78,6 +93,7 @@ pub fn parse_str(
                     break;
                 }
             }
+            // Check if the name is a constant, a function or is in the variable map
             if let Some(f) = CONSTANTS.get(string.as_str()) {
                 tokens.push(Token::Number(*f));
             } else if let Some(fun) = FUNCTIONS.get(&string.as_str()) {

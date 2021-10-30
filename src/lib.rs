@@ -54,6 +54,7 @@ mod test {
                 Token::Function(FUNCTIONS.get("max").unwrap().clone()),
                 Token::ParLeft,
                 Token::Number(Decimal::from_f64(2.0).unwrap()),
+                Token::Comma,
                 Token::Number(Decimal::from_f64(3.0).unwrap()),
                 Token::ParRight,
                 Token::Operator(*OPERATORS.get(&'/').unwrap()),

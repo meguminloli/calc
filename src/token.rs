@@ -6,6 +6,8 @@ use crate::op::Operator;
 
 use rust_decimal::prelude::*;
 
+// TODO: Add more constants
+/// List of inbuilt constants
 pub static CONSTANTS: Lazy<HashMap<&'static str, Decimal>> = Lazy::new(|| {
     let mut map = HashMap::new();
     map.insert("e", Decimal::E);
@@ -14,12 +16,16 @@ pub static CONSTANTS: Lazy<HashMap<&'static str, Decimal>> = Lazy::new(|| {
     map
 });
 
+/// A function enum for keeping track of the different types of functions
+/// with one or two parameters (for now).
 #[derive(PartialEq, Debug, Clone)]
 pub enum Function {
     OneParam(fn(Decimal) -> Decimal),
     TwoParam(fn(Decimal, Decimal) -> Decimal),
 }
 
+// TODO: Add more functions
+/// List of inbuilt functions
 pub static FUNCTIONS: Lazy<HashMap<&str, Function>> = Lazy::new(|| {
     let mut map = HashMap::new();
     map.insert("sin", Function::OneParam(|f| f.sin()));
@@ -31,6 +37,8 @@ pub static FUNCTIONS: Lazy<HashMap<&str, Function>> = Lazy::new(|| {
     map
 });
 
+/// A token can be a number, a left parenthesis, a right parenthesis,
+/// an operator, a function, a constant, or a comma (only for parsing ease).
 #[derive(PartialEq, Debug)]
 pub enum Token {
     Number(Decimal),

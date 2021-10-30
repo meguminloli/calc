@@ -35,6 +35,7 @@ fn calculate(s: &str, variables: Option<&HashMap<String, Decimal>>) -> Result<De
 }
 
 fn main() {
+    // Lock and buffer both stdin and stdout
     let stdout = stdout();
     let stdin = stdin();
     let stdout_locked = stdout.lock();
@@ -48,6 +49,7 @@ fn main() {
         let mut input = String::new();
         stdin.read_line(&mut input).ok();
         let input = input.trim_start().trim_end().to_string();
+        // Handle inbuilt functions
         if input == "exit" || input == "quit" {
             break;
         } else if input == "list" {

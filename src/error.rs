@@ -3,13 +3,24 @@ use std::{
     num::ParseFloatError,
 };
 
+/// Error enum for the crate.
+/// It implements `std::error::Error` for ease of use
+/// These errors can occur during the parsing, the conversion to rpn, or the evaluation
+/// of the tree
 pub enum Error {
+    /// Unknown token error
     UnknownToken,
+    /// Invalid token error
     InvalidToken,
+    /// Unbalanced parenthesis error
     UnbalancedParens,
+    /// Unfinished expression error
     UnfinishedExpr,
+    /// Number parsing error
     NumberParseError,
+    /// Not enough arguments to functions
     NotEnoughArgs,
+    /// Unexpected token error
     UnexpectedToken,
 }
 
